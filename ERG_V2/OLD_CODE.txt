@@ -1,0 +1,458 @@
+// ERG_V2.cpp : Defines the entry point for the console application.
+//
+#include "stdafx.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <glut.h>
+#include <math.h>
+#include <stdio.h>     // - Just for some ASCII messages
+#include "glut.h"  
+int projection_type;
+
+void init(void)
+{
+
+}
+
+
+void setProjectionType(int w, int h)
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	switch (projection_type)
+	{
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+		glOrtho(-20, 20, -20, 20, 30, 100);
+		break;
+	case 4:
+		gluPerspective(40.0, (GLfloat)w / (GLfloat)h, 1.0, 200.0);
+		break;
+	default:
+		break;
+	}
+	glMatrixMode(GL_MODELVIEW);
+}
+void setProjectionType()
+{
+	int w = glutGet(GLUT_WINDOW_WIDTH);
+	int h = glutGet(GLUT_WINDOW_HEIGHT);
+	setProjectionType(w, h);
+}
+void reshape(int w, int h)
+{
+	//ortho2d
+	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+	setProjectionType(w, h);
+}
+
+void drawSphere();
+
+void drawscene(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glColor3f(1.0, 1.0, 1.0);
+	glLoadIdentity();             /* clear the matrix */
+	/* viewing transformation  */
+	gluLookAt(0, 80, -80,
+		0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0);
+
+
+	glEnable(GL_COLOR_MATERIAL);
+	GLfloat specularCoeff[] = {0.0,0.0,0.0,1.0};
+	GLfloat diffuseCoeff[] = { 0.647059, 0.164706, 0.164706 };
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specularCoeff);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, diffuseCoeff);
+
+	glBegin(GL_QUADS);
+	glVertex3f(-5.0f, 5.0f, -10.0f);
+	glVertex3f(5.0f, 5.0f, -10.0f);
+	glVertex3f(5.0f, -5.0f, -10.0f);
+	glVertex3f(-5.0f, -5.0f, -10.0f);
+	glEnd();
+	glColor3f(0.0, 1.0, 0.0);
+	glBegin(GL_QUADS);
+	glVertex3f(-5.0f, 5.0f, 10.0f);
+	glVertex3f(5.0f, 5.0f, 10.0f);
+	glVertex3f(5.0f, -5.0f, 10.0f);
+	glVertex3f(-5.0f, -5.0f, 10.0f);
+	glEnd();
+	glColor3f(0.0, 1.0, 1.0);
+	glBegin(GL_QUADS);
+	glVertex3f(5.0f, 5.0f, 10.0f);
+	glVertex3f(5.0f, 5.0f, -10.0f);
+	glVertex3f(5.0f, -5.0f, -10.0f);
+	glVertex3f(5.0f, -5.0f, 10.0f);
+	glEnd();
+	glColor3f(0.0, 0.0, 1.0);
+	glBegin(GL_QUADS);
+	glVertex3f(-5.0f, 5.0f, 10.0f);
+	glVertex3f(-5.0f, 5.0f, -10.0f);
+	glVertex3f(-5.0f, -5.0f, -10.0f);
+	glVertex3f(-5.0f, -5.0f, 10.0f);
+	glEnd();
+	glColor3f(1.0, 0.0, 1.0);
+	glBegin(GL_QUADS);
+	glVertex3f(-5.0f, -5.0f, 10.0f);
+	glVertex3f(5.0f, -5.0f, 10.0f);
+	glVertex3f(5.0f, -5.0f, -10.0f);
+	glVertex3f(-5.0f, -5.0f, -10.0f);
+	glEnd();
+	glColor3f(1.0, 1.0, 0.0);
+	glBegin(GL_QUADS);
+	glVertex3f(-5.0f, 5.0f, 10.0f);
+	glVertex3f(5.0f, 5.0f, 10.0f);
+	glVertex3f(5.0f, 5.0f, -10.0f);
+	glVertex3f(-5.0f, 5.0f, -10.0f);
+	glEnd();
+
+	glDisable(GL_COLOR_MATERIAL);
+	//Υπολογισμός του ύψους της σκεπής: Εφόσον το τρίγωνο στην πρόσοψη του κτιρίου πρέπει να είναι ισόπλευρο εύκολα προκύπτει πως
+	//η κάθε πλευρά θα πρέπει να είναι α=10, αφού τόσο γνωρίζουμε ήδη πως είναι η βάση του. Σχεδιάζουμε το ύψος του τριγώνου και 
+	//μέσω του πυθαγορείου θεωρήματος σε ένα από τα δύο κάθετα τρίγωνα συμπαιρένουμε πως το ύψος είναι η ρίζα του 75
+
+
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 100);
+	 
+	glColor3f(1.00, 1.0, 0.5);
+	int h = sqrt(75.0);
+	glBegin(GL_QUADS);
+	glVertex3f(-5.0f, 5.0f, 10.0f);
+	glVertex3f(0.0f, 5.0f + h, 10.0f);
+	glVertex3f(0.0f, 5.0f + h, -10.0f);
+	glVertex3f(-5.0f, 5.0f, -10.0f);
+	glEnd();
+	glBegin(GL_QUADS);
+	glVertex3f(0.0f, 5.0f + h, 10.0f);
+	glVertex3f(0.0f, 5.0f + h, -10.0f);
+	glVertex3f(5.0f, 5.0f, -10.0f);
+	glVertex3f(5.0f, 5.0f, 10.0f);
+	glEnd();
+	glBegin(GL_TRIANGLES);
+	glVertex3f(-5.0f, 5.0f, 10.0f);
+	glVertex3f(0.0f, 5.0f + h, 10.0f);
+	glVertex3f(5.0f, 5.0f, 10.0f);
+	glEnd();
+	glBegin(GL_TRIANGLES);
+	glVertex3f(-5.0f, 5.0f, -10.0f);
+	glVertex3f(0.0f, 5.0f + h, -10.0f);
+	glVertex3f(5.0f, 5.0f, -10.0f);
+	glEnd();
+
+	glTranslatef(20, 10, 0);
+
+	drawSphere();
+
+	glDisable(GL_COLOR_MATERIAL);
+
+	glutSwapBuffers();
+}
+
+void divideAndDraw(float* v1, float* v2, float*v3, int depth);
+
+void drawSphere()
+{
+	float tetrahedron[4][3] = {
+		{ 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 0.942809f, -0.33333f },
+		{ -0.816497f, -0.471405f, -0.333333f },
+		{ 0.816497f, -0.471405f, -0.333333f } };
+
+	int depth = 4;
+
+	divideAndDraw(tetrahedron[0], tetrahedron[1], tetrahedron[2], depth);
+	divideAndDraw(tetrahedron[0], tetrahedron[1], tetrahedron[3], depth);
+	divideAndDraw(tetrahedron[0], tetrahedron[2], tetrahedron[3], depth);
+	divideAndDraw(tetrahedron[1], tetrahedron[2], tetrahedron[3], depth);
+}
+
+void normalize(float* v)
+{
+	float a = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+	a = sqrt(a);
+	v[0] /= a;
+	v[1] /= a;
+	v[2] /= a;
+}
+
+void divideAndDraw(float* v1, float* v2, float*v3, int depth)
+{
+	if (depth == 0)
+	{
+		glBegin(GL_TRIANGLES);
+		//glNormal3fv(v1); 
+		glVertex3fv(v1);
+		//glNormal3fv(v2);
+		glVertex3fv(v2);
+		//glNormal3fv(v3); 
+		glVertex3fv(v3);
+		glEnd();
+	}
+	else
+	{
+		float v12[3], v23[3], v13[3];
+		for (int i = 0; i < 3; i++)
+		{
+			v12[i] = (v1[i] + v2[i]) / 2.0;
+			v23[i] = (v2[i] + v3[i]) / 2.0;
+			v13[i] = (v3[i] + v1[i]) / 2.0;
+		}
+		normalize(v12);
+		normalize(v23);
+		normalize(v13);
+		int new_depth = depth - 1;
+		divideAndDraw(v1, v12, v13, new_depth);
+		divideAndDraw(v12, v13, v23, new_depth);
+		divideAndDraw(v12, v2, v23, new_depth);
+		divideAndDraw(v13, v23, v3, new_depth);
+	}
+}
+
+
+
+void menu(int item)
+{
+	/*Υλοποίηση του μενού επιλογών για τον αριθμό των σημείων που θα χρησιμοποιηθούν*/
+	projection_type = item;
+	setProjectionType();
+	glutPostRedisplay();
+}
+
+int main(int argc, char** argv)
+{
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+	glutInitWindowSize(500, 500);
+	glutInitWindowPosition(100, 100);
+	glutCreateWindow("House");
+	glutDisplayFunc(drawscene);
+	glutReshapeFunc(reshape);
+
+	// Menu
+	glutCreateMenu(menu);
+	glutAddMenuEntry("Πρόσοψη με παράλληλη ορθογραφική προβολή", 1);
+	glutAddMenuEntry("Κάτοψη με παράλληλη ορθογραφική προβολή", 2);
+	glutAddMenuEntry("Δεξιά όψη με παράλληλη ορθογραφική προβολή", 0);
+	glutAddMenuEntry("Ισομετρική όψη/μπρόστά πάνω δεξιά γωνία", 3);
+	glutAddMenuEntry("Προοπτική Προβολή/πάνω δεξιά ακμή", 4);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+	glClearColor(0.2, 0.3, 0.6, 1.0);
+	glClearDepth(10.0);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_DEPTH_TEST);
+
+	glutMainLoop();
+	return 0;
+}
+class HeightMap
+{
+private:
+	const GLfloat big_neg = -0.0f;
+public:
+	int size;
+	GLfloat* _data;
+
+	HeightMap(int Size) : size(Size)
+	{
+		_data = new GLfloat[size*size];
+		int cnt = size*size;
+		for (int i = 0; i < cnt; i++)
+			_data[i] = big_neg;
+	}
+
+	~HeightMap()
+	{
+		delete[] _data;
+	}
+
+	GLfloat GetItem(int row, int col)
+	{
+		if (row > size - 1 || col > size - 1)
+			cout << " error";
+		return _data[row*size + col];
+	}
+
+	void SetItem(int row, int col, GLfloat val)
+	{
+		if (row > size - 1 || col > size - 1)
+			cout << " error";
+		_data[row*size + col] = val;
+	}
+
+
+	void DoStep(int r1, int c1, int r2, int c2)
+	{
+		int s = min((r2 - r1), (c2 - c1));
+		if (s <= 1)
+			return;
+
+		double H = 3 - D_;
+		double pow_seg = pow(0.5, H);
+		GLfloat scale  = s * NOISE_SCALE;
+
+		int m_r = (r1 + r2) / 2;
+		int m_c = (c1 + c2) / 2;
+
+		int m_point = TERRAIN_SIZE / 2;
+		GLfloat dx = m_point - m_r;
+		GLfloat dy = m_point - m_c;
+
+		GLfloat dist = sqrt(dx*dx + dy*dy);
+
+		GLfloat ave = TOP_SCALE - dist*DIS_SCALE;
+		cout << "A=" << ave << endl;
+		if (m_c != c1)
+		{
+			GLfloat e = 0.5 *(GetItem(r1, c1) + GetItem(r1, c2));
+			e += scale * generateGaussianNoise(ave, 1);
+			SetItem(r1, m_c, e);
+
+			GLfloat g = 0.5*(GetItem(r2, c2) + GetItem(r2, c1));
+			g += scale * generateGaussianNoise(ave, 1);
+			SetItem(r1, m_c, g);
+		}
+
+		if (m_r != r1)
+		{
+			GLfloat f = 0.5*(GetItem(r1, c2) + GetItem(r2, c2));
+			f += scale * generateGaussianNoise(ave, 1);
+			SetItem(m_r, c2, f);
+
+			GLfloat h = 0.5*(GetItem(r2, c1) + GetItem(r1, c1));
+			h += scale * generateGaussianNoise(ave, 1);
+			SetItem(m_r, c1, h);
+		}
+
+		GLfloat m = 0.25*(GetItem(r1, c1) + GetItem(r1, c2) + GetItem(r2, c2) + GetItem(r1, c2));
+		//m = ave + scale * generateGaussianNoise(ave, 1);
+		SetItem(m_r, m_c, m);
+
+		DoStep(r1, c1, m_r, m_c);
+		DoStep(r1, m_c, m_r, c2);
+		DoStep(m_r, m_c, r2, c2);
+		DoStep(m_r, c1, r2, m_c);
+
+	}
+};
+
+
+//struct TextPoint
+//{
+//	GLfloat x, y;
+//
+//	TextPoint(GLfloat X, GLfloat Y) : x(X), y(Y){}
+//	TextPoint() :x(0), y(0){}
+//
+//	static TextPoint MidPoint(TextPoint a, TextPoint b)
+//	{
+//		GLfloat nx = 0.5*(a.x + b.x);
+//		GLfloat ny = 0.5*(a.y + b.y);
+//		return TextPoint(nx, ny);
+//	}
+//
+//	static TextPoint MidPoint(TextPoint a, TextPoint b, TextPoint c, TextPoint d)
+//	{
+//		GLfloat nx = 0.25*(a.x + b.x + c.x + d.x);
+//		GLfloat ny = 0.25*(a.y + b.y + c.y + d.y);
+//		return TextPoint(nx, ny);
+//	}
+//};
+
+//struct GPoint
+//{
+//public:
+//	GLfloat x, y, z;
+//	TextPoint tp;
+//
+//	GPoint(GLfloat X, GLfloat Y, GLfloat Z, TextPoint TP) : x(X), y(Y), z(Z), tp(TP)
+//	{}
+//	GPoint() : x(0), y(0), z(0), tp(TextPoint()){}
+//
+//	static GPoint  MidPoint(GPoint a, GPoint b)
+//	{
+//		GLfloat nx = 0.5*(a.x + b.x);
+//		GLfloat ny = 0.5*(a.y + b.y);
+//		GLfloat nz = 0.5*(a.z + b.z);
+//		TextPoint ntp = TextPoint::MidPoint(a.tp, b.tp);
+//		return GPoint(nx, ny, nz, ntp);
+//	}
+//
+//	static GPoint MidPoint(GPoint a, GPoint b, GPoint c, GPoint d)
+//	{
+//		GLfloat nx = 0.25*(a.x + b.x + c.x + d.x);
+//		GLfloat ny = 0.25*(a.y + b.y + c.y + d.y);
+//		GLfloat nz = 0.25*(a.z + b.z + c.z + d.z);
+//		TextPoint ntp = TextPoint::MidPoint(a.tp, b.tp, c.tp, d.tp);
+//		return GPoint(nx, ny, nz, ntp);
+//	}
+//
+//	GLfloat DistanceFrom(GPoint other)
+//	{
+//		double dx = x - other.x;
+//		double dy = x - other.y;
+//		double dz = z - other.z;
+//		return sqrt(dx*dx + dy*dy + dz*dz);
+//	}
+//};
+
+
+
+	TrianglePoint CreatePoint(int r, int c)
+	{
+		GLfloat x = _alpha * r + _beta;
+		GLfloat z = _alpha * c + _beta;
+		GLfloat y = GetItem(r, c);
+		return TrianglePoint(x, y, z);
+	}
+
+	vector<TrianglePoint> CreateTriangles()
+	{
+		vector<TrianglePoint> T;
+		for (int r = 0; r < _size - 1; r++)
+		{
+			TrianglePoint p0 = CreatePoint(r, 0);
+			p0.IsStart = true;
+			TrianglePoint p1 = CreatePoint(r+1, 0);
+			p1.IsStart = true;
+			T.push_back(p0);
+			T.push_back(p1);
+			int cnt = T.size();
+			for (int c = 1; c < _size; c++)
+			{
+				TrianglePoint rc1 = CreatePoint(r, c);				
+				computeNormal(rc1.vect, T[cnt - 1].vect, T[cnt - 2].vect, rc1.norm);
+				T.push_back(rc1); cnt++;
+				TrianglePoint rc2 = CreatePoint(r + 1, c);
+				computeNormal(rc2.vect, T[cnt - 1].vect, T[cnt - 2].vect, rc1.norm);
+			}
+		}
+		return T;
+	}
+
+
+	
+struct TrianglePoint
+{
+public:
+	GLfloat vect[3];
+	GLfloat norm[3];
+	bool IsStart;
+
+	TrianglePoint()
+	{
+		vect[0] = 0; vect[1] = 0; vect[2] = 0;
+		norm[0] = 0; norm[1] = 0; norm[2] = 0;
+		IsStart = false;
+	}
+
+	TrianglePoint(GLfloat x, GLfloat y, GLfloat z)
+	{
+		vect[0] = x; vect[1] = y; vect[2] = z;
+		norm[0] = 0; norm[1] = 0; norm[2] = 0;
+		IsStart = false;
+	}
+};
